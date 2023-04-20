@@ -1,7 +1,9 @@
 from tkinter import *
 import time
+import re
 
 amountVar = 1
+endResultSorted = 0
 
 def createWindow():
     global allFoodDates
@@ -24,9 +26,6 @@ def createWindow():
     window.title("foods and expiration")
     window.geometry("500x500")
     window.mainloop()
-
-def checkAllDates():
-    pass
 
 def createNewObject():
     global amountVar
@@ -104,7 +103,42 @@ def breakPiece(boutton, text):
     update()
 
 def searchItem():
-    pass
+    global results
+    searchWindow = Tk()
+
+    searchBar = Entry(searchWindow)
+    searchBar.grid(row = 0, column = 0)
+
+    searchfunction = Button(searchWindow, text = "search", bg = "Lime", width = 10, height = 3,
+                            command = lambda searchBar = searchBar: findFood(searchBar.get()))
+    searchfunction.grid(row = 0, column = 1)
+    
+    results = Text(searchWindow)
+    results.grid(row = 1, column = 0, columnspan = 3)
+    
+    searchWindow.title("Search food")
+    searchWindow.geometry("500x500")
+    searchWindow.mainloop()
+
+def findFood(quarry):
+    global results
+    global endResultSorted
+
+    neededQuarry = "((.)*(" + quarry + "){1})"
+    
+    allfound = re.findall(neededQuarry, endResultSorted)
+
+    resultmodified = ""
+    
+    for each in allfound:
+        if len(each) == 0:
+            continue
+        else:
+            resultmodified += str(each[0]) + "\n"
+    
+    results.delete("1.0", "end")
+    results.insert("1.0", resultmodified)
+
 
 def addNewItem(name, date):
     global amountVar
@@ -129,6 +163,7 @@ def change(num):
 
 def update():
     global allFoodDates
+    global endResultSorted
 
     endResult = ""
     
